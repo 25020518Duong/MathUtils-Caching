@@ -1,0 +1,29 @@
+name: Java CI with Maven Caching
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    name: Build and Verify with Cache
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout mã nguồn
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    # 2. Cài đặt Java 17 và bật Maven Dependency Caching
+    - name: Set up JDK 17 with Maven Cache
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven' # Cơ chế tự động băm (hash) pom.xml để quản lý ~/.m2/repository
+
+    # 3. Thực thi build và kiểm thử
+    - name: Build with Maven
+      run: mvn -B clean verify --file pom.xml
